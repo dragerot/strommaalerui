@@ -6,6 +6,11 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 https://reactjs.org/docs/create-a-new-react-app.html
 
+https://medium.com/in-the-weeds/learning-react-with-create-react-app-part-1-a12e1833fdc
+
+yarn start
+
+---------------
 
 In the project directory, you can run:
 
