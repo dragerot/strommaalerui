@@ -2,6 +2,11 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 ## Available Scripts
 
+## Tore Gard
+
+https://reactjs.org/docs/create-a-new-react-app.html
+
+
 In the project directory, you can run:
 
 ### `npm start`
