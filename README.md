@@ -1,5 +1,14 @@
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+yarn global add eslint
+https://react-bootstrap.netlify.com/migrating/
+ npm install --save-dev eslint babel-eslint eslint-loader
+ 
+## https://dash.pusher.com/chatkit/db93e6f4-944d-45aa-8a01-6459f9d66a6e/console
+## https://developer.okta.com/code/react/okta_react_sign-in_widget#create-a-widget-wrapper
+## https://developer.okta.com/code/javascript/okta_sign-in_widget 
+## https://tylermcginnis.com/react-router-pass-props-to-components/
+ 
 ## Available Scripts
 
 ## Tore Gard

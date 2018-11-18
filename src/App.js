@@ -1,38 +1,154 @@
-import React, { Component } from 'react';
-import RegisterMaaling from './RegisterMaaling'
-// import logo from './logo.svg';
-import './App.css';
-//import aaa from './RegisterMaaling';
+import React from 'react'
+import Chatkit from '@pusher/chatkit'
+// import MessageList from './components/MessageList'
+// import SendMessageForm from './components/SendMessageForm'
+// import RoomList from './components/RoomList'
+// import NewRoomForm from './components/NewRoomForm'
 
-// const App = () => {
-//     return (
-//         <div className="App">Hello World ssssss!
-//             <RegisterMaaling/>
-//         </div>);
-// };
+import { tokenUrl, instanceLocator } from './config'
+import RegisterMaaling from "./components/RegisterMaaling";
+import { Security, ImplicitCallback } from '@okta/okta-react';
+import { BrowserRouter , Route,Link } from 'react-router-dom';
+import Home from './components/Home';
 
-class App extends Component {
-  render() {
-    return (
-      <div className="App">
-        {/*<header className="App-header">*/}
-          {/*/!*<img src={logo} className="App-logo" alt="logo" />*!/*/}
-          {/*<p>*/}
-            {/*Edit <code>src/App.js</code> and save to reload.*/}
-          {/*</p>*/}
-          {/*<a*/}
-            {/*className="App-link"*/}
-            {/*href="https://reactjs.org"*/}
-            {/*target="_blank"*/}
-            {/*rel="noopener noreferrer"*/}
-          {/*>*/}
-            {/*Learn React*/}
-          {/*</a>*/}
-        {/*</header>*/}
-         <RegisterMaaling maalerNummer='237283092' maalingHovedValue='10000' maalingLeietakerValue='2000' />
-      </div>
-    );
-  }
+
+const config = {
+    issuer: 'https://dev-997043.oktapreview.com/oauth2/default',
+    redirect_uri: window.location.origin + '/implicit/callback',
+    client_id: '0oahkpf4gaqcgPMCa0h7'
 }
 
-export default App;
+class App extends React.Component {
+
+    constructor() {
+        super()
+        this.state = {
+            roomId: null,
+            messages: [],
+            joinableRooms: [],
+            joinedRooms: []
+        }
+        this.sendMessage = this.sendMessage.bind(this)
+        this.subscribeToRoom = this.subscribeToRoom.bind(this)
+        this.getRooms = this.getRooms.bind(this)
+        this.createRoom = this.createRoom.bind(this)
+
+        // this.Stromregning = this.Stromregning.bind(this);
+    }
+
+    componentDidMount() {
+        const chatManager = new Chatkit.ChatManager({
+            instanceLocator,
+            userId: 'Leietager',
+            tokenProvider: new Chatkit.TokenProvider({
+                url: tokenUrl
+            })
+        })
+
+        chatManager.connect()
+            .then(currentUser => {
+                this.currentUser = currentUser
+                this.getRooms()
+            })
+            .catch(err => console.log('error on connecting: ', err))
+    }
+
+    getRooms() {
+        this.currentUser.getJoinableRooms()
+            .then(joinableRooms => {
+                this.setState({
+                    joinableRooms,
+                    joinedRooms: this.currentUser.rooms
+                })
+            })
+            .catch(err => console.log('error on joinableRooms: ', err))
+    }
+
+    subscribeToRoom(roomId) {
+        this.setState({ messages: [] })
+        this.currentUser.subscribeToRoom({
+            roomId: roomId,
+            hooks: {
+                onNewMessage: message => {
+                    this.setState({
+                        messages: [...this.state.messages, message]
+                    })
+                }
+
+            }
+        })
+            .then(room => {
+                this.setState({
+                    roomId: room.id
+                })
+                this.getRooms()
+            })
+            .catch(err => console.log('error on subscribing to room: ', err))
+    }
+
+    sendMessage(text) {
+        this.currentUser.sendMessage({
+            text,
+            roomId: this.state.roomId
+        })
+    }
+
+    createRoom(name) {
+        this.currentUser.createRoom({
+            name
+        })
+            .then(room => {
+                this.subscribeToRoom(room.id)
+            })
+            .catch(err => console.log('error with createRoom: ', err))
+    }
+
+    // Stromregning(props) {
+    //     return (
+    //         <div>
+    //             <RegisterMaaling  maalerNummer="sdsdsd" salingHovedValue="111" maalingHovedValue="0" />
+    //         </div>
+    //     );
+    // }
+
+    render() {
+        return (
+            <div className="app">
+                    <div>
+                        <ul>
+                            <li>
+                                <Link to="/stromregistrering">Strøm registrering</Link>
+                            </li>
+                        </ul>
+                        <hr />
+                    {/*<Security issuer={config.issuer}*/}
+                              {/*client_id={config.client_id}*/}
+                              {/*redirect_uri={config.redirect_uri}*/}
+                    {/*>*/}
+                        {/*<Route path='/' exact={true} component={Home}/>*/}
+                        {/*<Route path='/implicit/callback' component={ImplicitCallback}/>*/}
+                    {/*</Security>*/}
+                        <Route path="/stromregistrering"
+                               render={(props) => <RegisterMaaling {...props} maalingHovedValue={1212121} maalingLeietakerValue={1212} />}
+                        />
+                    </div>
+                {/*<RegisterMaaling maalerNummer={123} maalingHovedValue={1212121} maalingLeietakerValue={1212}/>*/}
+                {/*<RoomList*/}
+                    {/*subscribeToRoom={this.subscribeToRoom}*/}
+                    {/*rooms={[...this.state.joinableRooms, ...this.state.joinedRooms]}*/}
+                    {/*roomId={this.state.roomId} />*/}
+                {/*<MessageList*/}
+                    {/*roomId={this.state.roomId}*/}
+                    {/*messages={this.state.messages} />*/}
+                {/*<SendMessageForm*/}
+                    {/*disabled={!this.state.roomId}*/}
+                    {/*sendMessage={this.sendMessage} />*/}
+                {/*<NewRoomForm createRoom={this.createRoom} />*/}
+                {/*<Route exact path="/" component={Home} />*/}
+
+            </div>
+        );
+    }
+}
+
+export default App

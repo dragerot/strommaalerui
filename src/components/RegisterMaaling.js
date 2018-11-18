@@ -3,14 +3,18 @@ import React, { Component } from 'react';
 class RegisterMaaling extends Component {
     constructor(props) {
         super(props);
-        this.state = {maalerNummer: props.maalerNummer,maalingHovedValue: props.maalingHovedValue,maalingLeietakerValue: props.maalingLeietakerValue};
+        this.state = {
+            maalerNummer: props.maalerNummer,
+            maalingHovedValue: props.maalingHovedValue,
+            maalingLeietakerValue: props.maalingLeietakerValue
+        };
 
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
     }
 
-    handleChange(event) {
 
+    handleChange(event) {
         this.setState( {
             maalerNummer: event.target.maalerNummer,
             maalingHovedValue: event.target.maalingLeietakerValue,
@@ -18,6 +22,7 @@ class RegisterMaaling extends Component {
         });
 
     }
+
 
     handleSubmit(event) {
         let sentence = 'Målernummer'+ this.state.maalerNummer + ' er registrert';
