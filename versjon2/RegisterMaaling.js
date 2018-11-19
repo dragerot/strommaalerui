@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button , Form, FormGroup, ControlLabel,FormControl,ButtonGroup} from 'react-bootstrap';
+import { Button , Form, FormGroup, Label} from 'react-bootstrap';
 
 class RegisterMaaling extends Component {
     constructor(props) {
@@ -41,10 +41,7 @@ class RegisterMaaling extends Component {
 
     render() {
         return (
-
-            <Form class="needs-validation" novalidate  onSubmit={this.handleSubmit}>
-                <div className="form-row">
-                    <div className="col-md-4 mb-1">
+            <Form inline onSubmit={this.handleSubmit}>
                 <FormGroup controlId="maalerNummer">
                     <ControlLabel>Måler nummer</ControlLabel>{' '}
                     <FormControl type="text" placeholder="Måler nummer" />
@@ -58,8 +55,6 @@ class RegisterMaaling extends Component {
                     <FormControl type="text" placeholder="Leietager måler" />
                 </FormGroup>{' '}
                 <Button type="submit">Registrer</Button>
-                   </div>
-                </div>
             </Form>
         );
     }

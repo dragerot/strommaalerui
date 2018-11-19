@@ -1,15 +1,10 @@
 import React from 'react'
-import Chatkit from '@pusher/chatkit'
-// import MessageList from './components/MessageList'
-// import SendMessageForm from './components/SendMessageForm'
-// import RoomList from './components/RoomList'
-// import NewRoomForm from './components/NewRoomForm'
-
 import { tokenUrl, instanceLocator } from './config'
 import RegisterMaaling from "./components/RegisterMaaling";
 import { Security, ImplicitCallback } from '@okta/okta-react';
 import { BrowserRouter , Route,Link } from 'react-router-dom';
 import Home from './components/Home';
+import { Navbar , NavItem, Nav} from 'react-bootstrap';
 
 
 const config = {
@@ -28,99 +23,29 @@ class App extends React.Component {
             joinableRooms: [],
             joinedRooms: []
         }
-        this.sendMessage = this.sendMessage.bind(this)
-        this.subscribeToRoom = this.subscribeToRoom.bind(this)
-        this.getRooms = this.getRooms.bind(this)
-        this.createRoom = this.createRoom.bind(this)
 
-        // this.Stromregning = this.Stromregning.bind(this);
     }
-
-    componentDidMount() {
-        const chatManager = new Chatkit.ChatManager({
-            instanceLocator,
-            userId: 'Leietager',
-            tokenProvider: new Chatkit.TokenProvider({
-                url: tokenUrl
-            })
-        })
-
-        chatManager.connect()
-            .then(currentUser => {
-                this.currentUser = currentUser
-                this.getRooms()
-            })
-            .catch(err => console.log('error on connecting: ', err))
-    }
-
-    getRooms() {
-        this.currentUser.getJoinableRooms()
-            .then(joinableRooms => {
-                this.setState({
-                    joinableRooms,
-                    joinedRooms: this.currentUser.rooms
-                })
-            })
-            .catch(err => console.log('error on joinableRooms: ', err))
-    }
-
-    subscribeToRoom(roomId) {
-        this.setState({ messages: [] })
-        this.currentUser.subscribeToRoom({
-            roomId: roomId,
-            hooks: {
-                onNewMessage: message => {
-                    this.setState({
-                        messages: [...this.state.messages, message]
-                    })
-                }
-
-            }
-        })
-            .then(room => {
-                this.setState({
-                    roomId: room.id
-                })
-                this.getRooms()
-            })
-            .catch(err => console.log('error on subscribing to room: ', err))
-    }
-
-    sendMessage(text) {
-        this.currentUser.sendMessage({
-            text,
-            roomId: this.state.roomId
-        })
-    }
-
-    createRoom(name) {
-        this.currentUser.createRoom({
-            name
-        })
-            .then(room => {
-                this.subscribeToRoom(room.id)
-            })
-            .catch(err => console.log('error with createRoom: ', err))
-    }
-
-    // Stromregning(props) {
-    //     return (
-    //         <div>
-    //             <RegisterMaaling  maalerNummer="sdsdsd" salingHovedValue="111" maalingHovedValue="0" />
-    //         </div>
-    //     );
-    // }
 
     render() {
         return (
-            <div className="app">
-                    <div>
-                        <ul>
-                            <li>
-                                <Link to="/stromregistrering">Strøm registrering</Link>
-                            </li>
-                        </ul>
-                        <hr />
+            <div >
+                <div>
+                    <Navbar  class="navbar navbar-expand-lg navbar-light bg-light">
+                        <Navbar.Header>
+                            <Navbar.Brand >
+                                <a href="/">Home</a>
+                            </Navbar.Brand>
+                            <Navbar.Brand>
+                                <a href="/stromregistrering">Måling</a>
+                            </Navbar.Brand>
+                            <Navbar.Brand>
+                                <a href="/">Melding</a>
+                            </Navbar.Brand>
+                        </Navbar.Header>
+                    </Navbar>
+                </div>
+
+
                     {/*<Security issuer={config.issuer}*/}
                               {/*client_id={config.client_id}*/}
                               {/*redirect_uri={config.redirect_uri}*/}
@@ -131,21 +56,6 @@ class App extends React.Component {
                         <Route path="/stromregistrering"
                                render={(props) => <RegisterMaaling {...props} maalingHovedValue={1212121} maalingLeietakerValue={1212} />}
                         />
-                    </div>
-                {/*<RegisterMaaling maalerNummer={123} maalingHovedValue={1212121} maalingLeietakerValue={1212}/>*/}
-                {/*<RoomList*/}
-                    {/*subscribeToRoom={this.subscribeToRoom}*/}
-                    {/*rooms={[...this.state.joinableRooms, ...this.state.joinedRooms]}*/}
-                    {/*roomId={this.state.roomId} />*/}
-                {/*<MessageList*/}
-                    {/*roomId={this.state.roomId}*/}
-                    {/*messages={this.state.messages} />*/}
-                {/*<SendMessageForm*/}
-                    {/*disabled={!this.state.roomId}*/}
-                    {/*sendMessage={this.sendMessage} />*/}
-                {/*<NewRoomForm createRoom={this.createRoom} />*/}
-                {/*<Route exact path="/" component={Home} />*/}
-
             </div>
         );
     }
